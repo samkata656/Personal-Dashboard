@@ -86,6 +86,17 @@ class SwitchRequestTests(ThemeTestCase):
     def test_other_addresses_cannot_be_posted_to(self):
         self.assertEqual(self.request("POST", "{}", path="/api/pc")[0], 404)
 
+    def test_requests_for_another_websites_name_are_refused(self):
+        for method, body in (("GET", None), ("POST", '{"theme": "neon"}'), ("HEAD", None)):
+            connection = http.client.HTTPConnection("127.0.0.1", self.port, timeout=5)
+            self.addCleanup(connection.close)
+            headers = {"Host": f"evil.example:{self.port}", "Content-Type": "application/json"}
+            connection.request(method, "/api/theme" if body else "/index.html", body=body, headers=headers)
+            response = connection.getresponse()
+            response.read()
+            self.assertEqual(response.status, 403, method)
+        self.assertEqual(theme.read_theme(), "mono")
+
 
 if __name__ == "__main__":
     unittest.main()

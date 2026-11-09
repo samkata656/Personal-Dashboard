@@ -2,6 +2,7 @@
 
 import http.client
 import json
+import re
 import socket
 import sys
 import threading
@@ -20,6 +21,16 @@ HOST_IPV6 = "::1"
 PORT = 8787
 WEB_DIR = Path(__file__).resolve().parent.parent / "web"
 MAX_THEME_REQUEST_BYTES = 1024
+MAX_READ_BYTES = 64 * 1024
+ALLOWED_HOSTS = {"localhost", "127.0.0.1", "[::1]"}
+
+
+def host_allowed(host, port=PORT):
+    """True only for this PC's own addresses. Stops a website from pointing its own name at this server
+    ("DNS rebinding") to read the dashboard."""
+    # A name, or an IPv6 address in [brackets], optionally followed by :port.
+    match = re.fullmatch(r"(\[[^\]]*\]|[^:]+)(?::(\d+))?", (host or "").strip().lower())
+    return bool(match) and match.group(1) in ALLOWED_HOSTS and match.group(2) in (None, str(port))
 
 
 class DashboardHandler(SimpleHTTPRequestHandler):
@@ -27,7 +38,19 @@ class DashboardHandler(SimpleHTTPRequestHandler):
         # Only the web folder is ever served, so secrets elsewhere in the project stay private.
         super().__init__(*args, directory=str(WEB_DIR), **kwargs)
 
+    def refuse_other_hosts(self):
+        if host_allowed(self.headers.get("Host"), self.server.server_address[1]):
+            return False
+        self.send_error(403)
+        return True
+
+    def do_HEAD(self):
+        if not self.refuse_other_hosts():
+            super().do_HEAD()
+
     def do_GET(self):
+        if self.refuse_other_hosts():
+            return
         path = self.path.split("?")[0]
         if path == "/api/pc":
             self.send_pc_stats()
@@ -47,21 +70,32 @@ class DashboardHandler(SimpleHTTPRequestHandler):
             super().do_GET()
 
     def do_POST(self):
+        body = self.read_body()
+        if self.refuse_other_hosts():
+            return
         if self.path.split("?")[0] == "/api/theme":
-            self.receive_theme()
+            self.receive_theme(body)
         else:
             self.send_error(404)
 
-    def receive_theme(self):
+    def read_body(self):
+        """Reads what was sent before answering: if it's left unread, Windows can cut the connection before a
+        refusal arrives. Returns None if the size is missing or too big."""
+        try:
+            length = int(self.headers.get("Content-Length", ""))
+        except ValueError:
+            return None
+        return self.rfile.read(length) if 0 <= length <= MAX_READ_BYTES else None
+
+    def receive_theme(self, body):
         # Browsers won't let other websites send this type of request here, so they can't change the colors.
         if self.headers.get_content_type() != "application/json":
             self.send_json(415, {"error": "Expected JSON"})
             return
         try:
-            length = int(self.headers.get("Content-Length", ""))
-            if not 0 <= length <= MAX_THEME_REQUEST_BYTES:
+            if body is None or len(body) > MAX_THEME_REQUEST_BYTES:
                 raise ValueError("Bad request size")
-            theme.set_theme(json.loads(self.rfile.read(length))["theme"])
+            theme.set_theme(json.loads(body)["theme"])
         except (ValueError, KeyError, TypeError) as error:
             self.send_json(400, {"error": str(error)})
         except OSError as error:

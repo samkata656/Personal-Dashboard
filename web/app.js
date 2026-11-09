@@ -5,7 +5,7 @@ const CLOCK_REFRESH_MS = 1000;
 const MUSIC_REFRESH_MS = 1000;
 // The server asks OpenRouter every 5 minutes. The page checks the server's latest answer more often.
 const OPENROUTER_REFRESH_MS = 30000;
-// Claude Code saves new numbers whenever it gets a reply, so a few seconds behind is plenty.
+// The server asks Anthropic every 5 minutes; checking the server often picks up new numbers quickly.
 const CLAUDE_REFRESH_MS = 5000;
 const DAY_MS = 24 * 60 * 60 * 1000;
 
