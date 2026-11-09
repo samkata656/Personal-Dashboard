@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="mono">
+<head>
+  <meta charset="utf-8">
+  <title>Side Monitor Dashboard</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="stage">
+    <div class="column-left">
+
+      <section class="panel clock" aria-label="Clock">
+        <div id="clock-time" class="clock-time"></div>
+        <div id="clock-date" class="clock-date"></div>
+        <div class="claude-usage" aria-label="Claude usage">
+          <div class="claude-row">
+            <div class="claude-header">
+              <div class="claude-label">Claude session</div>
+              <div id="claude-session-used" class="claude-value"></div>
+            </div>
+            <div class="bar claude-bar"><div id="claude-session-fill" class="bar-fill"></div></div>
+            <div id="claude-session-reset" class="claude-reset"></div>
+          </div>
+          <div class="claude-row">
+            <div class="claude-header">
+              <div class="claude-label">Claude week</div>
+              <div id="claude-week-used" class="claude-value"></div>
+            </div>
+            <div class="bar claude-bar"><div id="claude-week-fill" class="bar-fill"></div></div>
+            <div id="claude-week-reset" class="claude-reset"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel music" aria-label="Now playing">
+        <div id="music-track" class="music-track">
+          <div class="music-row">
+            <div id="music-art" class="music-art">
+              <img id="music-art-image" class="music-art-image" alt="">
+              <div id="music-art-none" class="music-art-none">
+                <svg width="110" height="110" viewBox="0 0 24 24" fill="none" class="icon-faint" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+              </div>
+              <svg id="music-art-fake" width="340" height="340" viewBox="0 0 300 300" aria-hidden="true">
+                <rect width="300" height="300" fill="#1A0F2E"/>
+                <circle cx="150" cy="170" r="96" fill="#FF2BD6"/>
+                <rect x="0" y="170" width="300" height="130" fill="#120A22"/>
+                <g stroke="#00E5FF" stroke-width="4">
+                  <line x1="0" y1="196" x2="300" y2="196"/>
+                  <line x1="0" y1="226" x2="300" y2="226"/>
+                  <line x1="0" y1="262" x2="300" y2="262"/>
+                  <line x1="150" y1="170" x2="20" y2="300"/>
+                  <line x1="150" y1="170" x2="280" y2="300"/>
+                  <line x1="150" y1="170" x2="150" y2="300"/>
+                </g>
+                <g fill="#120A22">
+                  <rect x="54" y="120" width="192" height="8"/>
+                  <rect x="54" y="140" width="192" height="10"/>
+                  <rect x="54" y="158" width="192" height="12"/>
+                </g>
+              </svg>
+            </div>
+            <div class="music-info">
+              <div class="music-status">
+                <svg id="music-icon-play" width="44" height="44" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg>
+                <svg id="music-icon-pause" width="44" height="44" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="4.5" width="4" height="15" rx="1"/><rect x="14" y="4.5" width="4" height="15" rx="1"/></svg>
+                <div id="music-paused-label" class="music-paused-label">Paused</div>
+              </div>
+              <div id="music-title" class="music-title"></div>
+              <div id="music-artist" class="music-artist"></div>
+            </div>
+          </div>
+          <div class="music-progress">
+            <div id="music-position" class="music-time"></div>
+            <div class="bar music-bar"><div id="music-fill" class="bar-fill"></div></div>
+            <div id="music-duration" class="music-time"></div>
+          </div>
+        </div>
+
+        <div id="music-idle" class="music-idle">
+          <div class="music-idle-art">
+            <svg width="110" height="110" viewBox="0 0 24 24" fill="none" class="icon-faint" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+          </div>
+          <div class="music-idle-text">
+            <div id="music-idle-title" class="music-idle-title"></div>
+            <div id="music-idle-subtitle" class="music-idle-subtitle"></div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+    <div class="column-right">
+
+      <section class="panel openrouter" aria-label="OpenRouter">
+        <div class="or-header">
+          <svg id="or-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M15 9.5c-.6-1-1.7-1.5-3-1.5-1.7 0-3 .9-3 2s1.3 1.7 3 2 3 .9 3 2-1.3 2-3 2c-1.3 0-2.4-.5-3-1.5M12 6v2M12 16v2"/></svg>
+          <div class="or-name">OpenRouter</div>
+          <div id="or-offline" class="or-offline">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" class="icon-dim" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 2l20 20M5.8 8.2A6 6 0 0 0 7 20h10c.6 0 1.2-.1 1.7-.3M21.4 16.4A4.5 4.5 0 0 0 17.5 10h-.6A6 6 0 0 0 10.4 6.2"/></svg>
+            Offline
+          </div>
+        </div>
+        <div class="or-credits-row">
+          <div id="or-credits" class="or-credits"></div>
+          <div id="or-left" class="or-left">left</div>
+        </div>
+        <div id="or-online" class="or-online">
+          <div class="or-spend">
+            <div id="or-spend" class="or-spend-value"></div>
+            <div class="or-spend-label">last 7 days</div>
+          </div>
+          <div id="or-bars" class="or-bars"></div>
+        </div>
+        <div id="or-last-updated" class="or-last-updated"></div>
+      </section>
+
+      <section id="pc" class="panel pc" aria-label="PC hardware">
+        <div class="gauges">
+          <div id="gauge-cpu" class="gauge" data-label="i9-11900"></div>
+          <div id="gauge-gpu" class="gauge" data-label="RX 9070 XT"></div>
+        </div>
+        <div class="memory">
+          <div class="memory-row">
+            <div class="memory-header">
+              <div class="memory-label">VRAM</div>
+              <div class="memory-value"><span id="vram-used"></span> <span id="vram-total" class="memory-total"></span></div>
+            </div>
+            <div class="bar memory-bar"><div id="vram-fill" class="bar-fill"></div></div>
+          </div>
+          <div class="memory-row">
+            <div class="memory-header">
+              <div class="memory-label">RAM</div>
+              <div class="memory-value"><span id="ram-used"></span> <span id="ram-total" class="memory-total"></span></div>
+            </div>
+            <div class="bar memory-bar"><div id="ram-fill" class="bar-fill"></div></div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="fake-data.js"></script>
+  <script src="common.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

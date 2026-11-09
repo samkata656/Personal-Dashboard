@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="mono">
+<head>
+  <meta charset="utf-8">
+  <title>Game Stats</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="stage" class="game-stage">
+    <section id="game-cpu" class="panel game-panel" aria-label="CPU">
+      <div id="gauge-cpu" class="gauge" data-label="i9-11900"></div>
+    </section>
+    <section id="game-gpu" class="panel game-panel" aria-label="GPU">
+      <div id="gauge-gpu" class="gauge" data-label="RX 9070 XT"></div>
+    </section>
+  </div>
+
+  <script src="fake-data.js"></script>
+  <script src="common.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>

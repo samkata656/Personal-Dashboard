@@ -1,0 +1,15 @@
+# Secrets: never commit these.
+.env
+.env.*
+!.env.example
+
+# Local data: logs, usage readings, settings saved by the server.
+data/
+.security-reports/
+
+# Python and tools
+.venv/
+__pycache__/
+*.pyc
+*.tmp
+.claude/settings.local.json

@@ -1,0 +1,667 @@
+/* Fonts are stored in web/fonts, so the page never needs the internet for them. */
+@font-face {
+  font-family: 'Exo 2';
+  font-weight: 100 900;
+  src: url(fonts/exo2-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Exo 2';
+  font-weight: 100 900;
+  src: url(fonts/exo2-cyrillic.woff2) format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Orbitron';
+  font-weight: 400 900;
+  src: url(fonts/orbitron.woff2) format('woff2');
+}
+
+/* The neon colors. Orange and red are the hot-temperature colors, so every theme keeps them. */
+:root {
+  --bg: #06070B;
+  --panel: #0D1018;
+  --line: #1C2233;
+  --text: #F2F5FF;
+  --text-soft: #AEB6CF;
+  --text-dim: #8A93AD;
+  --text-faint: #5B6380;
+  --accent: #00E5FF;
+  --accent-2: #FF2BD6;
+  --accent-glow: rgba(0, 229, 255, 0.45);
+  --orange: #FF9F1C;
+  --red: #FF3355;
+  --clock-text: #E6FCFF;
+  --clock-border: rgba(0, 229, 255, 0.45);
+  --clock-shadow: rgba(0, 229, 255, 0.12);
+  --clock-glow: #00E5FF;
+  --clock-glow-wide: rgba(0, 229, 255, 0.4);
+  --art-glow: rgba(255, 43, 214, 0.25);
+  --music-glow: #00E5FF;
+  --paused-fill: #3A4160;
+  --dashed: #2A3047;
+  --chip: #161A26;
+  --spend: #FF2BD6;
+  --or-bar: #FF2BD6;
+  --or-bar-dim: 0.4;
+}
+
+/* The black and white colors, measured from the reference photo. */
+:root[data-theme="mono"] {
+  --bg: #0B0B0C;
+  --panel: #131314;
+  --line: #252527;
+  --text: #CFCFD1;
+  --text-soft: #A8A8AB;
+  --text-dim: #8E8E92;
+  --text-faint: #66666A;
+  --accent: #C4C4C6;
+  --accent-2: #8A8A8E;
+  --accent-glow: rgba(196, 196, 198, 0.3);
+  --clock-text: #CFCFD1;
+  --clock-border: #3A3A3C;
+  --clock-shadow: transparent;
+  --clock-glow: rgba(207, 207, 209, 0.35);
+  --clock-glow-wide: rgba(207, 207, 209, 0.1);
+  --art-glow: rgba(255, 255, 255, 0.05);
+  --music-glow: transparent;
+  --paused-fill: #4A4A4D;
+  --dashed: #333336;
+  --chip: #1C1C1E;
+  --spend: #BDBDC0;
+  --or-bar: #C4C4C6;
+  --or-bar-dim: 0.75;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+#stage {
+  position: absolute;
+  transform-origin: 0 0;
+  width: 1920px;
+  height: 1280px;
+  padding: 48px;
+  display: flex;
+  gap: 32px;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Exo 2', sans-serif;
+}
+
+.column-left {
+  width: 1000px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.column-right {
+  flex-grow: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.panel {
+  background: var(--panel);
+  border: 2px solid var(--line);
+  border-radius: 32px;
+  display: flex;
+  flex-direction: column;
+}
+
+.bar {
+  border-radius: 999px;
+  background: var(--line);
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 999px;
+}
+
+/* Clock */
+.clock {
+  height: 560px;
+  border-color: var(--clock-border);
+  box-shadow: 0 0 48px var(--clock-shadow);
+  padding: 48px 56px;
+  justify-content: center;
+  gap: 28px;
+}
+
+.clock-time {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 800;
+  font-size: 212px;
+  line-height: 1;
+  color: var(--clock-text);
+  text-shadow: 0 0 18px var(--clock-glow), 0 0 48px var(--clock-glow-wide);
+}
+
+.clock-date {
+  font-size: 60px;
+  font-weight: 600;
+  color: var(--text-soft);
+  white-space: nowrap;
+}
+
+.claude-usage {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+}
+
+.claude-row {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.claude-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.claude-label {
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--text-soft);
+}
+
+.claude-value {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 800;
+  font-size: 40px;
+}
+
+.claude-bar { height: 14px; }
+
+#claude-session-fill { background: var(--accent); }
+#claude-week-fill { background: var(--accent-2); }
+
+.claude-reset {
+  min-height: 34px;
+  font-size: 28px;
+  color: var(--text-dim);
+}
+
+/* Now playing */
+.music {
+  flex-grow: 1;
+  padding: 44px 48px;
+}
+
+.music-track {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.music-row {
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
+}
+
+.music-art {
+  width: 340px;
+  height: 340px;
+  flex-shrink: 0;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 0 40px var(--art-glow);
+}
+
+.music-art svg { display: block; }
+
+.icon-faint { stroke: var(--text-faint); }
+.icon-dim { stroke: var(--text-dim); }
+#music-icon-play { fill: var(--accent); }
+#music-icon-pause { fill: var(--text-dim); }
+
+.music-art-image {
+  display: block;
+  width: 340px;
+  height: 340px;
+  object-fit: cover;
+}
+
+.music-art-none {
+  width: 340px;
+  height: 340px;
+  border-radius: 24px;
+  border: 3px dashed var(--dashed);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.music-info {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+  padding-top: 8px;
+}
+
+.music-status {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.music-paused-label {
+  font-size: 36px;
+  font-weight: 600;
+  color: var(--text-dim);
+}
+
+/* Long song names stop at two lines instead of pushing the layout around. */
+.music-title {
+  font-size: 64px;
+  font-weight: 700;
+  /* Taller lines stop letters like "g" being cut off; the margins cancel the extra height. */
+  line-height: 1.25;
+  margin-block: -6.4px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.music-artist {
+  font-size: 44px;
+  color: var(--text-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.music-progress {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.music-time {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 600;
+  font-size: 36px;
+  color: var(--text-soft);
+  /* Digits here have different widths, so a fixed width stops the bar shifting as seconds change. */
+  min-width: 98px;
+}
+
+#music-duration { text-align: right; }
+
+.music-bar {
+  flex-grow: 1;
+  height: 16px;
+}
+
+.music-idle {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  gap: 44px;
+}
+
+.music-idle-art {
+  width: 260px;
+  height: 260px;
+  flex-shrink: 0;
+  border-radius: 24px;
+  border: 3px dashed var(--dashed);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.music-idle-text {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.music-idle-title {
+  font-size: 64px;
+  font-weight: 600;
+  color: var(--text-dim);
+}
+
+.music-idle-subtitle {
+  font-size: 40px;
+  color: var(--text-faint);
+}
+
+/* OpenRouter */
+.openrouter {
+  height: 460px;
+  padding: 40px 48px;
+  gap: 14px;
+}
+
+.or-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.or-name {
+  font-size: 40px;
+  font-weight: 700;
+  color: var(--text-soft);
+}
+
+.or-offline {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 22px;
+  border-radius: 999px;
+  background: var(--chip);
+  color: var(--text-dim);
+  font-size: 32px;
+  font-weight: 600;
+}
+
+.or-credits-row {
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+}
+
+.or-credits {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 800;
+  font-size: 116px;
+  line-height: 1;
+}
+
+.or-left {
+  font-size: 38px;
+  color: var(--text-dim);
+}
+
+.or-online {
+  margin-top: auto;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.or-spend {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.or-spend-value {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 800;
+  font-size: 64px;
+  line-height: 1;
+  color: var(--spend);
+}
+
+.or-spend-label {
+  font-size: 36px;
+  color: var(--text-dim);
+}
+
+.or-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.or-bar-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.or-bar {
+  width: 34px;
+  border-radius: 17px 17px 6px 6px;
+  background: var(--or-bar);
+  opacity: var(--or-bar-dim);
+}
+
+.or-bar-day {
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--text-dim);
+}
+
+.or-bar-column.today .or-bar { opacity: 1; }
+.or-bar-column.today .or-bar-day { color: var(--text); }
+
+.or-last-updated {
+  margin-top: auto;
+  font-size: 40px;
+  color: var(--text-dim);
+}
+
+/* PC stats */
+.pc {
+  flex-grow: 1;
+  padding: 36px 48px;
+  gap: 28px;
+}
+
+.gauges {
+  display: flex;
+  justify-content: space-between;
+  gap: 32px;
+}
+
+.gauge {
+  width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.gauge-label {
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1.1;
+  text-align: center;
+}
+
+.gauge-dial {
+  position: relative;
+  width: 320px;
+  height: 180px;
+}
+
+.gauge-track,
+.gauge-value {
+  fill: none;
+  stroke-width: 26;
+  stroke-linecap: round;
+}
+
+.gauge-track { stroke: var(--line); }
+
+.gauge-temp {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  text-align: center;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 800;
+  font-size: 80px;
+  line-height: 1;
+}
+
+.gauge-usage {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-top: 6px;
+}
+
+.gauge-usage-bar {
+  flex-grow: 1;
+  height: 14px;
+}
+
+.gauge-usage-fill { background: var(--accent); }
+
+.gauge-usage-value {
+  flex-shrink: 0;
+  min-width: 128px;
+  text-align: right;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 800;
+  font-size: 48px;
+  line-height: 1;
+}
+
+.gauge-clock {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.gauge-clock-value {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 600;
+  font-size: 40px;
+  color: var(--text-soft);
+}
+
+.gauge-clock-unit {
+  font-family: 'Exo 2', sans-serif;
+  font-size: 34px;
+  color: var(--text-dim);
+}
+
+.memory {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.memory-row {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.memory-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.memory-label {
+  font-size: 44px;
+  font-weight: 700;
+}
+
+.memory-value {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 800;
+  font-size: 52px;
+}
+
+.memory-total {
+  font-family: 'Exo 2', sans-serif;
+  font-weight: 600;
+  font-size: 40px;
+  color: var(--text-dim);
+}
+
+.memory-bar { height: 24px; }
+
+#vram-fill { background: var(--accent); }
+
+#ram-fill { background: var(--accent-2); }
+
+/* Game-time page (game.html): CPU and GPU stacked in the strip beside the League minimap. */
+#stage.game-stage {
+  width: 640px;
+  height: 1280px;
+  padding: 24px;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.game-panel {
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+}
+
+.game-panel .gauge { zoom: 1.5; }
+
+/* The color switch page (colors.html) */
+.switch-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: 16px;
+  color: var(--text);
+  font-family: 'Exo 2', sans-serif;
+}
+
+.switch-title {
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.switch-options {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+}
+
+.switch-option {
+  width: 220px;
+  padding: 24px;
+  background: var(--panel);
+  border: 2px solid var(--line);
+  border-radius: 16px;
+  color: var(--text-soft);
+  font: 600 22px 'Exo 2', sans-serif;
+  cursor: pointer;
+}
+
+.switch-option:hover { border-color: var(--text-dim); }
+.switch-option:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+
+.switch-option[aria-pressed="true"] {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+.switch-message {
+  min-height: 24px;
+  font-size: 18px;
+  color: var(--text-dim);
+}

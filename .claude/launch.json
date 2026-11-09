@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "dashboard-page",
+      "runtimeExecutable": ".venv/Scripts/python.exe",
+      "runtimeArgs": ["server/main.py"],
+      "port": 8787
+    }
+  ]
+}
